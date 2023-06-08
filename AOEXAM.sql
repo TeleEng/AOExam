@@ -21,7 +21,7 @@ insert into SaleProfit values ('P3', 0.10);
 insert into SaleProfit values ('P4', 0.20);
 insert into SaleProfit values ('P5', 0.10);
 insert into SaleProfit values ('P6', 0.10);
-
+------------------------------------------------------------------------------------
 -- Questions Query
 -- Q1 - Total Sale
 ALTER TABLE [dbo].[SaleTable]
@@ -29,18 +29,18 @@ ADD Price as (Quantity * UnitPrice);
 SELECT SUM(Price) AS TotalPrice
 FROM [dbo].[SaleTable];
 -- Answer: 35050
-
+------------------------------------------------------------------------------------
 -- Q2 - Unique Customer
 SELECT DISTINCT Customer
 FROM [dbo].[SaleTable];
 -- Answer: C1 C2 C3 C4 C5 C6 C7 C8 C9
-
+------------------------------------------------------------------------------------
 -- Q3 - Sale Per Product
 SELECT Product, SUM(Price) AS TotalSales
 FROM [dbo].[SaleTable]
 GROUP BY Product;
 --Answer: P1: 3900, P2: 4050, P3: 4800, P4: 11550, P5: 8800, P6: 1950
-
+------------------------------------------------------------------------------------
 -- Q4 - Query for Customers With 1 purchase > 1500
 SELECT Customer,
        COUNT(*) AS NumberOfPurchase,
@@ -62,7 +62,7 @@ GROUP BY Customer;
 -- C5	5	3300	18
 -- C6	3	3150	11
 -- C8	3	3500	14
-
+------------------------------------------------------------------------------------
 -- Q5 - Profit Amount and Percentage
 SELECT 
     SUM(Price * ProfitRatio) AS TotalProfitAmount,
@@ -72,8 +72,8 @@ FROM
 JOIN
      [dbo].[SaleProfit] ON [dbo].[SaleTable].Product = [dbo].[SaleProfit].Product;
 -- Answer: TotalProfitAmount = 5072.50, TotalProfitPercentage=14.4721
-
--- Q6 (A) Unique Customer Per Day
+------------------------------------------------------------------------------------
+-- Q6 (A) Unique Customer Per Date, Sum of Customer Per Date
 SELECT
     Date_,
     COUNT(DISTINCT Customer) AS NumberOfUniqueCustomers
@@ -81,8 +81,19 @@ FROM
      [dbo].[SaleTable]
 GROUP BY
     Date_;
--- Answer: 1: 5, 2: 4, 3: 4
-
+-- Answer: Date1: 5, Date2: 4, Date3: 4
+SELECT
+    SUM(UniqueCustomersPerDay) AS TotalUniqueCustomers
+FROM
+    (SELECT
+        Date_,
+        COUNT(DISTINCT Customer) AS UniqueCustomersPerDay
+    FROM
+        [dbo].[SaleTable]
+    GROUP BY
+        Date_) AS Subquery;
+-- Answer: TotalUniqueCustomers = 13
+------------------------------------------------------------------------------------
 -- Q6 (B) Organization Chart
 CREATE TABLE OrganizationChart
 (
